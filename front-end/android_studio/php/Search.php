@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 <?php
 
 	error_reporting(E_ALL); 
@@ -6,8 +7,8 @@
 	include('dbcon.php');
 
 
-	//POST °ªÀ» ÀÐ¾î¿Â´Ù.
-	$Name=isset($_POST['Name']) ? $_POST['Name'] : ''; //ÀÌ¸§°ª °¡Á®¿È
+	//POST ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¾ï¿½Â´ï¿½.
+	$Name=isset($_POST['Name']) ? $_POST['Name'] : ''; //ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	$android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
 	if ($Name != "" ){ 
@@ -20,7 +21,7 @@
 
         echo "'";
         echo $Name;
-        echo "'Àº Ã£À» ¼ö ¾ø½À´Ï´Ù.";
+        echo "'ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.";
     }
 	else{
 
@@ -30,7 +31,7 @@
 
         	extract($row);
 
-			//data¹è¿­ ¸¸µë
+			//dataï¿½è¿­ ï¿½ï¿½ï¿½ï¿½
             array_push($data, 
                 array('Name'=>$row["Name"],
                 'Price'=>$row["Price"],
@@ -48,13 +49,13 @@
         }else
         {
             header('Content-Type: application/json; charset=utf8');
-            $json = json_encode(array("webnautes"=>$data), JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE); //ÇÑ±ÛÃâ·Â À§ÇÔ(webnautes·Î Ãâ·Â)
+            $json = json_encode(array("webnautes"=>$data), JSON_PRETTY_PRINT+JSON_UNESCAPED_UNICODE); //ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(webnautesï¿½ï¿½ ï¿½ï¿½ï¿½)
             echo $json;
         }
     }
 }
 else {
-    echo "°Ë»öÇÒ ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä ";
+    echo "ï¿½Ë»ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½ ";
 }
 
 ?>
@@ -70,7 +71,7 @@ if (!$android){
    <body>
    
       <form action="<?php $_PHP_SELF ?>" method="POST">
-         ÀÌ¸§: <input type = "text" name = "Name" />
+         ï¿½Ì¸ï¿½: <input type = "text" name = "Name" />
          <input type = "submit" />
       </form>
    

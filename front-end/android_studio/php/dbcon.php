@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 <?php
 
     $host = 'localhost';
-    $username = 'yeahss'; # MySQL °èÁ¤ ¾ÆÀÌµð
-    $password = 'yesong826!'; # MySQL °èÁ¤ ÆÐ½º¿öµå
-    $dbname = 'yeahss';  # DATABASE ÀÌ¸§
+    $username = 'knormal'; # MySQL ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½
+    $password = 'knormal@0102'; # MySQL ï¿½ï¿½ï¿½ï¿½ ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½
+    $dbname = 'knormal';  # DATABASE ï¿½Ì¸ï¿½
 
 
     $options = array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8');

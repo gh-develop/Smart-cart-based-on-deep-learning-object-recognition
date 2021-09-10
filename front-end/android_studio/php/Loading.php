@@ -1,25 +1,26 @@
+# -*- coding: utf-8 -*-
 <?php
 
-    $mysqli = new mysqli("localhost", "yeahss", "yesong826!", "yeahss") or die("connection failed"); //mysql¿¡ Á¢¼Ó ½Ãµµ
-	//mysql_select_db("knormal", $con) or die("db selection failed"); //DB¸¦ ¼±ÅÃ
+    $mysqli = new mysqli("localhost", "knormal", "knormal@0102", "knormal") or die("connection failed"); //mysqlï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½
+	//mysql_select_db("knormal", $con) or die("db selection failed"); //DBï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	//$link = mysqli_connect($host, $user, $password, $dbname);
 
-	$query = "SELECT * FROM SHOPBASKET"; //Äõ¸®¹® ÀÛ¼º
+	$query = "SELECT * FROM SHOPBASKET"; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¼ï¿½
 	//mysqli_query($mysqli,"set names utf8");
 
-	$result = $mysqli->query($query); // mysqli_query([¿¬°á °´Ã¼], [Äõ¸®]), µ¥ÀÌÅÍ¸¦ ÀÐ¾î¿È
+	$result = $mysqli->query($query); // mysqli_query([ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ã¼], [ï¿½ï¿½ï¿½ï¿½]), ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½Ð¾ï¿½ï¿½
 	$total_record = $result->num_rows;
 
 	$result_array=array();
 
 	for($i=0;$i<$total_record;$i++){
-		//ÇÑ Çà¾¿ ÀÏ±â À§ÇØ offsetÀ» ÁÜ
+		//ï¿½ï¿½ ï¿½à¾¿ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ offsetï¿½ï¿½ ï¿½ï¿½
 		$result->data_seek($i);
   
-		// °á°ú°ªÀ» ¹è¿­·Î ¹Ù²Û´Ù.
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½Ù²Û´ï¿½.
 		$row = $result->fetch_array();
 
-		 // °á°ú°ªµéÀ» JSONÇü½ÄÀ¸·Î ³Ö±â À§ÇØ ¿¬°ü¹è¿­(keyÇÏ³ª, °ª ÇÏ³ª)·Î ³Ö´Â´Ù.
+		 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ JSONï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½è¿­(keyï¿½Ï³ï¿½, ï¿½ï¿½ ï¿½Ï³ï¿½)ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 		$row_array = array(
 		"Name" => $row['Name'],
 		"Price" => $row['Price'],
@@ -27,20 +28,20 @@
 		"Location" => $row['Location'],
 		"Image"=> $row['Image'],
 		);
-		// ÇÑ ÇàÀ» results¿¡ ³ÖÀ» ¹è¿­ÀÇ ³¡¿¡ Ãß°¡ÇÑ´Ù.
+		// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ resultsï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ñ´ï¿½.
 		array_push($result_array,$row_array);
 	}
 
-	// À§¿¡¼­ ¾òÀº °á°ú¸¦ ´Ù½Ã JSONÇü½ÄÀ¸·Î ³Ö´Â´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ JSONï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Â´ï¿½.
 	$arr = array(
 	"status" => "OK",
 	"num_result" => "$total_record",
 	"results" => $result_array
 	);
  
-	// ¸¸µç°Ç ±×³É ¹è¿­ÀÌ¹Ç·Î JSONÇü½ÄÀ¸·Î ÀÎÄÚµùÀ» ÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×³ï¿½ ï¿½è¿­ï¿½Ì¹Ç·ï¿½ JSONï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ ï¿½Ñ´ï¿½.
 	$json_array = json_encode($arr, JSON_UNESCAPED_UNICODE);
 
-	// ÀÎÄÚµùÇÑ JSON¹è¿­À» Ãâ·ÂÇÑ´Ù.
+	// ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ JSONï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	print_r($json_array);
 ?>
