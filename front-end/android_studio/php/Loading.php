@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 <?php
 
     $mysqli = new mysqli("localhost", "knormal", "knormal@0102", "knormal") or die("connection failed"); //mysql�� ���� �õ�
