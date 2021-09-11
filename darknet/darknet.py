@@ -124,7 +124,8 @@ def draw_boxes(detections, image, colors):
         cv2.putText(image, "{} [{:.2f}]".format(label, float(confidence)),
                     (left, top - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     colors[label], 2)
-    return image
+    # return에 label 추가                
+    return image, label
 
 
 def decode_detection(detections):
