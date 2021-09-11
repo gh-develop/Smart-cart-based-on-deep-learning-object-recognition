@@ -2,6 +2,7 @@
 from ctypes import *
 import random
 import os
+from typing import Any
 import cv2
 import time
 import darknet
@@ -150,6 +151,9 @@ def inference(darknet_image_queue, detections_queue, fps_queue,cap):
         fps = int(1/(time.time() - prev_time))
         fps_queue.put(fps)
         print("FPS: {}".format(fps))
+        
+        #darknet.py에 들어있는 print_detections함수를 호출
+        #라벨 정보를 받아오기 위해서 print)detections함수 수정 필요
         darknet.print_detections(detections, args.ext_output)
         darknet.free_image(darknet_image)
     #cv2.destroyAllWindows()
@@ -159,6 +163,7 @@ def drawing(frame_queue, detections_queue, fps_queue,cap):
     random.seed(3)  # deterministic bbox colors
     # video = set_saved_video(cap, args.out_filename, (video_width, video_height))
     while True:
+        # frame_queue는 main에 있는 변수이고 여기에는 video_capture함수에서 입력한 영상정보가 저장돼있음
         frame = frame_queue.get()
         detections = detections_queue.get()
         fps = fps_queue.get()
@@ -167,9 +172,15 @@ def drawing(frame_queue, detections_queue, fps_queue,cap):
             for label, confidence, bbox in detections:
                 bbox_adjusted = convert2original(frame, bbox)
                 detections_adjusted.append((str(label), confidence, bbox_adjusted))
-            image = darknet.draw_boxes(detections_adjusted, frame, class_colors)
+            
+            # darknet.py에 들어있는 draw_boxes함수를 호출
+            # draw_boxes에도 라벨 정보가 들어있음, 수정 필요
+            image, label = darknet.draw_boxes(detections_adjusted, frame, class_colors)
             if not args.dont_show:
                 cv2.imshow('Inference', image)
+                
+                # label출력 확인
+                cv2.putText(image, label, (30, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 2)
             #if args.out_filename is not None:
                # video.write(image)
             if cv2.waitKey(30) & 0xFF ==ord('q'):
