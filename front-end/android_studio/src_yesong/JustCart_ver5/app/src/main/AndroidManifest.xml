@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.JustCart_ver4">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_main3"
+        android:roundIcon="@mipmap/ic_logo_btn_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.JustCart_ver4"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".MypageActivity"></activity>
+        <activity android:name=".Frag_event3Activity" />
+        <activity android:name=".Frag_event2Activity" />
+        <activity android:name=".Frag_event1Activity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".EventActivity" />
+        <activity android:name=".ShopActivity" />
+        <activity android:name=".SearchActivity" />
+    </application>
+
+</manifest>
