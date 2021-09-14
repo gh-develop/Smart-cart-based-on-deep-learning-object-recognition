@@ -20,7 +20,7 @@ import numpy as np
 def parser():
     parser = argparse.ArgumentParser(description="YOLO Object Detection")
     parser.add_argument("--input", type=str, default="/home/ubuntu/han/2.mp4",
-                        help="video source. If empty, uses webcam 0 stream")
+                        help="video source. If empty, uses video file")
     parser.add_argument("--out_filename", type=str, default="",
                         help="inference video name. Not saved if empty")
     parser.add_argument("--weights", default="yolov4-tiny-custom_3th.weights",
