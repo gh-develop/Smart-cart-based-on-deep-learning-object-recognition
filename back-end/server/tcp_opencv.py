@@ -5,19 +5,20 @@ import socket
 
 # Reset SQL and Connect
 
-Food = pymysql.connect(
-    user='root',
-    passwd='1234',
-    host='34.71.138.158',
-    db='test0512',
+USERBASKET = pymysql.connect(
+    user='knormal',
+    passwd='knormal7',
+    host='34.64.244.67',
+    db='knormal',
     charset='utf8'
 )
-cursor = Food.cursor(pymysql.cursors.DictCursor)
+cursor = USERBASKET.cursor(pymysql.cursors.DictCursor)
 
-sql = "UPDATE Food SET number = '0'"
+sql = "UPDATE USERBASKET SET classNum = '0'"
 cursor.execute(sql)
-sql = "SELECT * FROM `Food`;"
+sql = "SELECT * FROM `USERBASKET`;"
 cursor.execute(sql)
+USERBASKET.commit()
 result = cursor.fetchall()
 result = list(result)
 print(result)
