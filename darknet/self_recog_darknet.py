@@ -13,6 +13,7 @@ from queue import Queue
 
 # Reset SQL and Connect
 
+# connect database
 USERBASKET = pymysql.connect(
     user='knormal',
     passwd='knormal@0102',
@@ -22,17 +23,30 @@ USERBASKET = pymysql.connect(
 )
 cursor = USERBASKET.cursor(pymysql.cursors.DictCursor)
 
+# initialize USERBASKET TABLE
 sql = "UPDATE USERBASKET SET classNum = '0'"
 cursor.execute(sql)
 sql = "SELECT * FROM `USERBASKET`;"
 cursor.execute(sql)
 USERBASKET.commit()
+
+# check initial value in USERBASKET TABLE
 result = cursor.fetchall()
 result = list(result)
 print(result)
 
-check_detection = set()
+# all detection labels are stored in check_detection variable
+check_detection = []
+# if weight change occur: 0, otherwise 1
+weight_change_signal = 1
+""" 
+if weight increase: weight_change_value = 1
+weight decrease: weight _change_value = -1
+ otherwise = 0
+"""
+weight_change_value = 0
 
+# arguments setting
 def parser():
     parser = argparse.ArgumentParser(description="YOLO Object Detection")
     parser.add_argument("--input", type=str, default="/home/ubuntu/han/2.mp4",
@@ -144,6 +158,40 @@ def video_capture(frame_queue, darknet_image_queue):
     cap.release()
 
 
+def send_query(label, weight_change_signal, weight_change_value):
+    
+    # if weight change occur: 0, otherwise 1
+    while weight_change_signal:
+        check_detection.add(label)
+        print("object detection occur: {}".format(label))
+    
+    # 최빈값 계산
+    max_value = max(set(check_detection), key=check_detection.count)
+
+    """ 
+    if weight increase: weight_change_value = 1
+    weight decrease: weight _change_value = -1
+    otherwise = 0
+    """
+    if weight_change_value == 1:
+        increase_sql = "UPDATE USERBASKET SET classNum = classNum+1 WHERE productName = '{}';".format(max_value)
+        cursor.execute(increase_sql)
+        USERBASKET.commit()
+
+        # check_detection 초기화
+        check_detection.clear()
+    elif weight_change_value == -1:
+        decrease_sql = "UPDATE USERBASKET SET classNum = classNum-1 WHERE productName = '{}';".format(max_value)
+        cursor.execute(decrease_sql)
+        USERBASKET.commit()
+
+        # check_detection 초기화
+        check_detection.clear()
+    else:
+        check_detection.clear()
+        
+
+
 def inference(darknet_image_queue, detections_queue, fps_queue):
     while cap.isOpened():
         darknet_image = darknet_image_queue.get()
@@ -154,15 +202,10 @@ def inference(darknet_image_queue, detections_queue, fps_queue):
         fps_queue.put(fps)
         print("FPS: {}".format(fps))
         label = darknet.print_detections(detections, args.ext_output)
-        print("what the hell {}".format(label))
+       
+        # update database using detection label
         if label is not None:
-            check_detection.add(label)
-            print("object detection occur: {}".format(label))
-            sql = "UPDATE USERBASKET SET classNum = classNum+1 WHERE productName = '{}';".format(label)
-            check_detection.clear()
-            print(check_detection)
-            cursor.execute(sql)
-            USERBASKET.commit()
+            send_query(label, weight_change_signal, weight_change_value)
         darknet.free_image(darknet_image)
     cap.release()
 
@@ -182,8 +225,6 @@ def drawing(frame_queue, detections_queue, fps_queue):
             image = darknet.draw_boxes(detections_adjusted, frame, class_colors)
             if not args.dont_show:
                 cv2.imshow('Inference', image)
-                # label출력 확인
-                #cv2.putText(image, label, (30, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 2)
             if args.out_filename is not None:
                 video.write(image)
             if cv2.waitKey(fps) == 27:
