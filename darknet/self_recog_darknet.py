@@ -6,9 +6,32 @@ import cv2
 import time
 import darknet
 import argparse
+import pymysql
+import socket
 from threading import Thread, enumerate
 from queue import Queue
 
+# Reset SQL and Connect
+
+USERBASKET = pymysql.connect(
+    user='knormal',
+    passwd='knormal@0102',
+    host='3.37.3.112',
+    db='knormal',
+    charset='utf8'
+)
+cursor = USERBASKET.cursor(pymysql.cursors.DictCursor)
+
+sql = "UPDATE USERBASKET SET classNum = '0'"
+cursor.execute(sql)
+sql = "SELECT * FROM `USERBASKET`;"
+cursor.execute(sql)
+USERBASKET.commit()
+result = cursor.fetchall()
+result = list(result)
+print(result)
+
+check_detection = set()
 
 def parser():
     parser = argparse.ArgumentParser(description="YOLO Object Detection")
@@ -130,7 +153,16 @@ def inference(darknet_image_queue, detections_queue, fps_queue):
         fps = int(1/(time.time() - prev_time))
         fps_queue.put(fps)
         print("FPS: {}".format(fps))
-        darknet.print_detections(detections, args.ext_output)
+        label = darknet.print_detections(detections, args.ext_output)
+        print("what the hell {}".format(label))
+        if label is not None:
+            check_detection.add(label)
+            print("object detection occur: {}".format(label))
+            sql = "UPDATE USERBASKET SET classNum = classNum+1 WHERE productName = '{}';".format(label)
+            check_detection.clear()
+            print(check_detection)
+            cursor.execute(sql)
+            USERBASKET.commit()
         darknet.free_image(darknet_image)
     cap.release()
 
@@ -147,11 +179,11 @@ def drawing(frame_queue, detections_queue, fps_queue):
             for label, confidence, bbox in detections:
                 bbox_adjusted = convert2original(frame, bbox)
                 detections_adjusted.append((str(label), confidence, bbox_adjusted))
-            image, label = darknet.draw_boxes(detections_adjusted, frame, class_colors)
+            image = darknet.draw_boxes(detections_adjusted, frame, class_colors)
             if not args.dont_show:
                 cv2.imshow('Inference', image)
                 # label출력 확인
-                cv2.putText(image, label, (30, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 2)
+                #cv2.putText(image, label, (30, 30), cv2.FONT_HERSHEY_PLAIN, 2, (255,0,0), 2)
             if args.out_filename is not None:
                 video.write(image)
             if cv2.waitKey(fps) == 27:
