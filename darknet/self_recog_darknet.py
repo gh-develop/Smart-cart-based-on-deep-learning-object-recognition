@@ -158,13 +158,7 @@ def video_capture(frame_queue, darknet_image_queue):
     cap.release()
 
 
-def send_query(label, weight_change_signal, weight_change_value):
-    
-    # if weight change occur: 0, otherwise 1
-    while weight_change_signal:
-        check_detection.add(label)
-        print("object detection occur: {}".format(label))
-    
+def send_query(check_detection, weight_change_value):
     # 최빈값 계산
     max_value = max(set(check_detection), key=check_detection.count)
 
@@ -177,14 +171,14 @@ def send_query(label, weight_change_signal, weight_change_value):
         increase_sql = "UPDATE USERBASKET SET classNum = classNum+1 WHERE productName = '{}';".format(max_value)
         cursor.execute(increase_sql)
         USERBASKET.commit()
-
+        print(check_detection)
         # check_detection 초기화
         check_detection.clear()
     elif weight_change_value == -1:
         decrease_sql = "UPDATE USERBASKET SET classNum = classNum-1 WHERE productName = '{}';".format(max_value)
         cursor.execute(decrease_sql)
         USERBASKET.commit()
-
+        print(check_detection)
         # check_detection 초기화
         check_detection.clear()
     else:
@@ -203,9 +197,15 @@ def inference(darknet_image_queue, detections_queue, fps_queue):
         print("FPS: {}".format(fps))
         label = darknet.print_detections(detections, args.ext_output)
        
+        global weight_change_signal       
         # update database using detection label
         if label is not None:
-            send_query(label, weight_change_signal, weight_change_value)
+            check_detection.append(label)
+            print("object detection occur: {}".format(label))
+            if weight_change_signal == 20:
+                weight_change_signal = 0
+                send_query(check_detection, weight_change_value)
+            weight_change_signal += 1
         darknet.free_image(darknet_image)
     cap.release()
 
