@@ -7,19 +7,19 @@
 
 
 	//POST 값을 읽어온다.
-	$Name=isset($_POST['Name']) ? $_POST['Name'] : ''; //이름값 가져옴
+	$Category=isset($_POST['Category']) ? $_POST['Category'] : ''; //이름값 가져옴
 	$android = strpos($_SERVER['HTTP_USER_AGENT'], "Android");
 
-	if ($Name != "" ){ 
+	if ($Category != "" ){ 
 
-    $sql="select * from SHOPBASKET where Name='$Name'";
+    $sql="select * from SHOPBASKET where Category='$Category'";
     $stmt = $con->prepare($sql);
     $stmt->execute();
  
     if ($stmt->rowCount() == 0){
 
         echo "'";
-        echo $Name;
+        echo $Category;
         echo "'은 찾을 수 없습니다.";
     }
 	else{
@@ -70,7 +70,7 @@ if (!$android){
    <body>
    
       <form action="<?php $_PHP_SELF ?>" method="POST">
-         이름: <input type = "text" name = "Name" />
+         이름: <input type = "text" name = "Category" />
          <input type = "submit" />
       </form>
    
